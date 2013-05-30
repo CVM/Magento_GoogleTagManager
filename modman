@@ -1,0 +1,6 @@
+app/code/community/CVM/GoogleTagManager/*		app/code/community/CVM/GoogleTagManager/
+app/design/frontend/base/default/layout/googletagmanager.xml		app/design/frontend/base/default/layout/googletagmanager.xml
+app/design/frontend/base/default/template/googletagmanager/* app/design/frontend/base/default/template/googletagmanager/
+app/etc/modules/CVM_GoogleTagManager.xml		app/etc/modules/CVM_GoogleTagManager.xml
+
+@shell cd "$PROJECT"; find * -type l >> .gitignore; cat .gitignore | sort | uniq > temp.gitignore; mv .gitignore .gitignore.bk; mv temp.gitignore .gitignore; rm -f .gitignore.bk; rm -f temp.gitignore;
