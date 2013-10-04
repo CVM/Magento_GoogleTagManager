@@ -39,17 +39,140 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	{
 		// Initialise our data source.
 		$data = array();
+        $remark_tags = '';
 
-		// Get transaction and visitor data, if desired.
+        // Get transaction and visitor data, if desired.
 		if (Mage::helper('googletagmanager')->isDataLayerTransactionsEnabled()) $data = $data + $this->_getTransactionData();
 		if (Mage::helper('googletagmanager')->isDataLayerVisitorsEnabled()) $data = $data + $this->_getVisitorData();
+        if (Mage::helper('googletagmanager')->isDataLayerDynamicRemarketingEnabled()) $remark_tags = $this->_getDynamicRemarketingData();
 
-		// Generate the data layer JavaScript.
-		if (!empty($data)) return "<script>dataLayer = [".json_encode($data)."];</script>\n\n";
-		else return '';
+        // Generate the data layer JavaScript.
+        if (!empty($data)) return "<script>dataLayer = [" . json_encode($data) . "];</script>\n\n" . $remark_tags;
+        else return '';
 	}
 
-	/**
+    /**
+     * Get tags for dynamic remarketing based on page type
+     *
+     * @link   https://developers.google.com/tag-manager/reference
+     * @author Martin Beukman <martbeuk@gmail.com>
+     * @return string
+     */
+    protected function _getDynamicRemarketingData() {
+        $return_data = array();
+        if ($this->getRequest()->getModuleName() == 'catalog' &&
+            $this->getRequest()->getControllerName() == 'product'
+        ) {
+            $_product = Mage::registry('current_product');
+            //load the categories of this product
+            $cats      = $_product->getCategoryIds();
+            $_use_cats = array();
+            foreach ($cats as $category_id) {
+                $_cat        = Mage::getModel('catalog/category')->load($category_id);
+                $_use_cats[] = "'" . $_cat->getName() . "'";
+            }
+
+            /**
+             * Get children products (all associated children products data)
+             *
+             */
+            $_use_childs_ids    = array();
+            $_use_childs_names  = array();
+            $_use_childs_prices = array();
+
+            //assign current product sku to array
+            $_use_childs_ids[]    = "'" . $_product->getSku() . "'";
+            $_use_childs_names[]  = "'" . $_product->getName() . "'";
+            $_use_childs_prices[] = "'" . $_product->getFinalPrice() . "'";
+            if ($_product->isConfigurable()) {
+                $childProducts = Mage::getModel('catalog/product_type_configurable')->getUsedProducts(null, $_product);
+                if (count($childProducts) > 0) {
+                    foreach ($childProducts as $child) {
+                        $_use_childs_ids[]   = "'" . $child->getSku() . "'";
+                        $_use_childs_names[] = "'" . $child->getName() . "'";
+                        //$_use_childs_prices[] = "'".$child->getFinalPrice()."'";
+                    }
+                }
+            }
+            $return_data[] = "ecomm_prodid: [" . implode(',', $_use_childs_ids) . "]";
+            $return_data[] = "ecomm_pagetype: 'product'";
+            $return_data[] = "pname: [" . implode(',', $_use_childs_names) . "]";
+            $return_data[] = "pcat: [" . implode(',', $_use_cats) . "]";
+            $return_data[] = "ecomm_totalvalue: [" . implode(',', $_use_childs_prices) . "]";
+        } elseif ($this->getRequest()->getModuleName() == 'catalog' &&
+            $this->getRequest()->getControllerName() == 'category'
+        ) {
+            //if on a category page
+            $return_data[] = "ecomm_prodid: []";
+            $return_data[] = "ecomm_pagetype: 'category'";
+            $return_data[] = "ecomm_totalvalue: []";
+        } elseif ($this->getRequest()->getModuleName() == 'checkout' &&
+            $this->getRequest()->getControllerName() == 'cart'
+        ) {
+            //if on a cart page
+
+            /*gather all product ids and total value*/
+
+            $session          = Mage::getSingleton('checkout/session');
+            $_use_childs_ids  = array();
+            $_use_total_price = 0.00;
+
+            foreach ($session->getQuote()->getAllItems() as $item) {
+                $_use_childs_ids[$item->getSku()] = "'" . $item->getSku() . "'";
+                $_use_total_price                 = $_use_total_price + $item->getQty() * $item->getBaseCalculationPrice();
+            }
+
+            $return_data[] = "ecomm_prodid: [" . implode(',', $_use_childs_ids) . "]";
+            $return_data[] = "ecomm_pagetype: 'cart'";
+            $return_data[] = "ecomm_totalvalue: [" . $_use_total_price . "]";
+        } elseif ($this->getRequest()->getModuleName() == 'checkout' &&
+            $this->getRequest()->getControllerName() == 'onepage' &&
+            $this->getRequest()->getActionName() == 'success'
+        ) {
+            //if on a succes page
+
+            /*gather all product ids and total value*/
+
+            $lastOrderId      = Mage::getSingleton('checkout/session')->getLastOrderId();
+            $_order           = Mage::getModel('sales/order')->load($lastOrderId);
+            $_use_childs_ids  = array();
+            $_totalData       = $_order->getData();
+            $_use_total_price = $_totalData['base_subtotal'];
+
+            foreach ($_order->getAllItems() as $item) {
+                $_use_childs_ids[$item->getSku()] = "'" . $item->getSku() . "'";
+            }
+
+            $return_data[] = "ecomm_prodid: [" . implode(',', $_use_childs_ids) . "]";
+            $return_data[] = "ecomm_pagetype: 'purchase'";
+            $return_data[] = "ecomm_totalvalue: [" . $_use_total_price . "]";
+        } elseif ($this->getRequest()->getModuleName() == 'cms' &&
+            $this->getRequest()->getControllerName() == 'index'
+        ) {
+            //if on home page
+            $return_data[] = "ecomm_prodid: []";
+            $return_data[] = "ecomm_pagetype: 'home'";
+            $return_data[] = "ecomm_totalvalue: []";
+        } else {
+            //any other page
+            $return_data[] = "ecomm_prodid: []";
+            $return_data[] = "ecomm_pagetype: 'siteview'";
+            $return_data[] = "ecomm_totalvalue: []";
+        }
+        //print $this->getRequest()->getModuleName();print $this->getRequest()->getControllerName();
+        //startpagina
+
+
+        /*prepare the return array*/
+        $remark_tags = "<script> var google_tag_params = {";
+        $remark_tags .= implode(",\n", $return_data);
+        $remark_tags .= "} </script>";
+        $remark_tags .= "<script> dataLayer = [{ google_tag_params: window.google_tag_params }]; </script>";
+        return $remark_tags;
+    }
+
+
+    /**
 	 * Get transaction data for use in the data layer.
 	 *
 	 * @link https://developers.google.com/tag-manager/reference

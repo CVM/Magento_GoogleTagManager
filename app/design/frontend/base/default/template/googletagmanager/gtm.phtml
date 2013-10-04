@@ -14,48 +14,6 @@
 // Render the data layer.
 echo $this->_getDataLayer();
 
-if(Mage::registry('current_product')) {
-    $_product = Mage::registry('current_product');
-    //load the categories of this product
-    $cats = $_product->getCategoryIds();
-    $_use_cats  = array();
-    foreach($cats as $category_id) {
-        $_cat = Mage::getModel('catalog/category')->load($category_id) ;
-        $_use_cats[] = "'".$_cat->getName()."'";
-    }
-
-    /**
-     * Get children products (all associated children products data)
-     *
-     * @todo this should be move to Gtm.php but this is a quick fix for dynamic remarketing on prod pages
-     */
-    $_use_childs_ids = array();
-    $_use_childs_names = array();
-    $_use_childs_prices = array();
-
-    //assign current product sku to array
-    $_use_childs_ids[] = "'".$_product->getSku()."'";
-    $_use_childs_names[] = "'".$_product->getName()."'";
-    $_use_childs_prices[] = "'".$_product->getFinalPrice()."'";
-    if($_product->isConfigurable()) {
-        $childProducts = Mage::getModel('catalog/product_type_configurable')->getUsedProducts(null,$_product);
-        if(count($childProducts) > 0) {
-            foreach($childProducts as $child) {
-                $_use_childs_ids[] = "'".$child->getSku()."'";
-                $_use_childs_names[] = "'".$child->getName()."'";
-                $_use_childs_prices[] = "'".$child->getFinalPrice()."'";
-            }
-        }
-    }
-    ?>
-    <script> var google_tag_params = {
-            prodid: [<?php print implode(',',$_use_childs_ids);?>],
-            pagetype: 'product',
-            pname: [<?php print implode(',',$_use_childs_names);?>],
-            pcat: [<?php print implode(',',$_use_cats);?>],
-            pvalue: [<?php print implode(',',$_use_childs_prices);?>] } </script>
-    <script> dataLayer = [{ google_tag_params: window.google_tag_params }]; </script>
-<?php }
 // Render the container snippet.
 echo $this->_getContainerSnippet();
 ?>

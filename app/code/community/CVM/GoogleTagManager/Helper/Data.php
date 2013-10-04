@@ -19,7 +19,9 @@ class CVM_GoogleTagManager_Helper_Data extends Mage_Core_Helper_Abstract
 
 	const XML_PATH_DATALAYER_VISITORS = 'google/googletagmanager/datalayervisitors';
 
-	/**
+    const XML_PATH_DATALAYER_DYNAMICREMARKETING = 'google/googletagmanager/dynamicremarketing';
+
+    /**
 	 * Determine if GTM is ready to use.
 	 *
 	 * @return bool
@@ -48,8 +50,18 @@ class CVM_GoogleTagManager_Helper_Data extends Mage_Core_Helper_Abstract
 		return Mage::getStoreConfig(self::XML_PATH_DATALAYER_TRANSACTIONS);
 	}
 
-	/**
-	 * Get the transaction type.
+    /**
+     * Add transaction data to the data layer?
+     *
+     * @return bool
+     */
+    public function isDataLayerDynamicRemarketingEnabled() {
+        return Mage::getStoreConfig(self::XML_PATH_DATALAYER_DYNAMICREMARKETING);
+    }
+
+
+    /**
+     * Get the transaction type.
 	 *
 	 * @return string
 	 */
