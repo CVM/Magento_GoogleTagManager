@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<package>
+    <name>GoogleTagManager</name>
+    <version>1.00.1</version>
+    <stability>beta</stability>
+    <license>1</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Google Tag Manager</summary>
+    <description>Google Tag Manager</description>
+    <notes>niet uitvoerig getest</notes>
+    <authors>
+        <author>
+            <name>Chris Martin</name>
+            <user>CVM</user>
+            <email>chris@chris-martin.net</email>
+        </author>
+    </authors>
+    <date>2013-10-11</date>
+    <time>10:27:35</time>
+    <contents>
+        <target name="magecommunity">
+            <dir name="CVM">
+                <dir name="GoogleTagManager">
+                    <dir name="Block">
+                        <file name="Gtm.php" hash="06c9c9a56c0e845c805524b9c08d22ea"/>
+                    </dir>
+                    <dir name="Helper">
+                        <file name="Data.php" hash="24e3d24877f7bfeba8b0b838ea59699e"/>
+                    </dir>
+                    <dir name="Model">
+                        <file name="Observer.php" hash="1391157e1f966cc424ffc4cf1c6af4ac"/>
+                    </dir>
+                    <dir name="etc">
+                        <file name="adminhtml.xml" hash="e31d31b9414a7e7386acfd0a18069053"/>
+                        <file name="config.xml" hash="f6f1f821411bb7af5ae290a5908bb7c0"/>
+                        <file name="system.xml" hash="74ecb28b8b3b59fa1c9888b142dc1467"/>
+                    </dir>
+                </dir>
+            </dir>
+            <dir name="Block">
+                <file name="Gtm.php" hash=""/>
+            </dir>
+            <dir name="Helper">
+                <file name="Data.php" hash=""/>
+            </dir>
+            <dir name="Model">
+                <file name="Observer.php" hash=""/>
+            </dir>
+            <dir>
+                <dir name="etc">
+                    <file name="adminhtml.xml" hash=""/>
+                    <file name="config.xml" hash=""/>
+                    <file name="system.xml" hash=""/>
+                </dir>
+            </dir>
+        </target>
+        <target name="mageetc">
+            <dir name=".">
+                <file name="CVM_GoogleTagManager.xml" hash=""/>
+            </dir>
+        </target>
+        <target name="magedesign">
+            <dir name="frontend">
+                <dir name="base">
+                    <dir name="default">
+                        <dir name="layout">
+                            <file name="googletagmanager.xml" hash="47a9d8dfb71531eb9bf7efc1953c7299"/>
+                        </dir>
+                        <dir name="template">
+                            <dir name="googletagmanager">
+                                <file name="gtm.phtml" hash="031f4e92ee998fc9ef32f624140d81d6"/>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+        </target>
+    </contents>
+    <compatible/>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.1.0</min>
+                <max>6.0.0.</max>
+            </php>
+        </required>
+    </dependencies>
+</package>
