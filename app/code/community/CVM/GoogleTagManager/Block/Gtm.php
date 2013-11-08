@@ -159,10 +159,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             $return_data[] = "ecomm_pagetype: 'siteview'";
             $return_data[] = "ecomm_totalvalue: []";
         }
-        //print $this->getRequest()->getModuleName();print $this->getRequest()->getControllerName();
-        //startpagina
-
-
         /*prepare the return array*/
         $remark_tags = "<script> var google_tag_params = {";
         $remark_tags .= implode(",\n", $return_data);
