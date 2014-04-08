@@ -79,6 +79,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			if ($i == 0) {
 				// Build all fields for first order.
 				$data = array(
+					'event' => 'transaction',
 					'transactionId' => $order->getIncrementId(),
 					'transactionDate' => date("Y-m-d"),
 					'transactionType' => Mage::helper('googletagmanager')->getTransactionType(),
