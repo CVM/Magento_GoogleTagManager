@@ -166,7 +166,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		foreach ($orders as $order) {
 			$ordersTotal += $order->getGrandTotal();
 		}
-		$data['visitorLifetimeValue'] = round($ordersTotal,2);
+		if ($customer->isLoggedIn()) {
+			$data['visitorLifetimeValue'] = round($ordersTotal,2);
+		} else {
+			$orderData = $this->_getTransactionData();
+			if (!empty($orderData)) {
+				$data['visitorLifetimeValue'] = $orderData['transactionTotal'];
+			} else {
+				$data['visitorLifetimeValue'] = 0;
+			}
+		}
 		$data['visitorExistingCustomer'] = ($ordersTotal > 0) ? 'Yes' : 'No';
 
 		return $data;
