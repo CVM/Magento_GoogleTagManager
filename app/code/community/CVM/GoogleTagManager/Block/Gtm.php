@@ -44,6 +44,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		if (Mage::helper('googletagmanager')->isDataLayerTransactionsEnabled()) $data = $data + $this->_getTransactionData();
 		if (Mage::helper('googletagmanager')->isDataLayerVisitorsEnabled()) $data = $data + $this->_getVisitorData();
 
+		// Enable modules to add custom data to the data layer
+		$data_layer = new Varien_Object();
+		$data_layer->setData($data);
+		Mage::dispatchEvent('cvm_googletagmanager_get_datalayer',
+		    array('data_layer' => $data_layer)
+		);
+		$data = $data_layer->getData();
+
 		// Generate the data layer JavaScript.
 		if (!empty($data)) return "<script>dataLayer = [".json_encode($data)."];</script>\n\n";
 		else return '';
