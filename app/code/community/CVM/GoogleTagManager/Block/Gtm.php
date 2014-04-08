@@ -95,7 +95,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 			// Build products array.
 			foreach ($order->getAllVisibleItems() as $item) {
-				$product = Mage::getModel('catalog/product')->loadByAttribute('sku',$item->getSku());
+				$product = Mage::getModel('catalog/product')->load($item->getProductId());
 				$product_categories = $product->getCategoryIds();
 				$categories = array();
 				foreach ($product_categories as $category) {
