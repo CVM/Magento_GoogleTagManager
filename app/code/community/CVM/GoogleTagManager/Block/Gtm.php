@@ -76,6 +76,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		$products = array();
 
 		foreach ($collection as $order) {
+            $shippingCarrierCode = $order->getShippingCarrier()->getCarrierCode() ?: '';
+
 			if ($i == 0) {
 				// Build all fields for first order.
 				$data = array(
@@ -89,7 +91,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 					'transactionTax' => round($order->getBaseTaxAmount(),2),
 					'transactionPaymentType' => $order->getPayment()->getMethodInstance()->getTitle(),
 					'transactionCurrency' => $order->getOrderCurrencyCode(),
-					'transactionShippingMethod' => $order->getShippingCarrier()->getCarrierCode(),
+					'transactionShippingMethod' => $shippingCarrierCode,
 					'transactionPromoCode' => $order->getCouponCode(),
 					'transactionProducts' => array()
 				);
@@ -99,7 +101,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				$data['transactionTotal'] += $order->getBaseGrandTotal();
 				$data['transactionShipping'] += $order->getBaseShippingAmount();
 				$data['transactionTax'] += $order->getBaseTaxAmount();
-				$data['transactionShippingMethod'] .= '|'.$order->getShippingCarrier()->getCarrierCode();
+				$data['transactionShippingMethod'] .= '|'.$shippingCarrierCode;
 			}
 
 			// Build products array.
