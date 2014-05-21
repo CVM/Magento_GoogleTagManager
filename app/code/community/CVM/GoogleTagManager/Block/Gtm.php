@@ -76,7 +76,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		$products = array();
 
 		foreach ($collection as $order) {
-            $shippingCarrierCode = $order->getShippingCarrier()->getCarrierCode() ?: '';
+            $shippingCarrierCode = $order->getShippingCarrier() ? $order->getShippingCarrier()->getCarrierCode() : '';
 
 			if ($i == 0) {
 				// Build all fields for first order.
