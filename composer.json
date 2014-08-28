@@ -1,0 +1,5 @@
+{
+    "name": "CVM/Magento_GoogleTagManager",
+    "type": "magento-module",
+    "description": "Google Tag Manager extension for Magento"
+}
