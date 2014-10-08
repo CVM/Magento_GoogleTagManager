@@ -11,7 +11,7 @@
 <layout version="0.1.0">
 	<default>
 		<reference name="after_body_start">
-			<block type="googletagmanager/gtm" name="google_tag_manager" as="google_tag_manager" template="googletagmanager/gtm.phtml" />
+			<block type="googletagmanager/gtm" name="google_tag_manager" as="google_tag_manager" template="googletagmanager/gtm.phtml" before="-"/>
 		</reference>
 	</default>
 </layout>
