@@ -84,6 +84,7 @@
 				<active>0</active>
 				<datalayertransactions>0</datalayertransactions>
 				<datalayervisitors>0</datalayervisitors>
+				<datalayerecomm>0</datalayerecomm>
 			</googletagmanager>
 		</google>
 	</default>

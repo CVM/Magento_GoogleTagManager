@@ -18,6 +18,7 @@ class CVM_GoogleTagManager_Helper_Data extends Mage_Core_Helper_Abstract
 	const XML_PATH_DATALAYER_TRANSACTIONAFFILIATION = 'google/googletagmanager/datalayertransactionaffiliation';
 
 	const XML_PATH_DATALAYER_VISITORS = 'google/googletagmanager/datalayervisitors';
+	const XML_PATH_DATALAYER_ECOMM = 'google/googletagmanager/datalayerecomm';
 
 	/**
 	 * Determine if GTM is ready to use.
@@ -76,5 +77,15 @@ class CVM_GoogleTagManager_Helper_Data extends Mage_Core_Helper_Abstract
 	public function isDataLayerVisitorsEnabled()
 	{
 		return Mage::getStoreConfig(self::XML_PATH_DATALAYER_VISITORS);
+	}
+
+	/**
+	 * Add ecomm data to the data layer?
+	 *
+	 * @return bool
+	 */
+	public function isDataLayerDynEcomEnabled()
+	{
+		return Mage::getStoreConfig(self::XML_PATH_DATALAYER_ECOMM);
 	}
 }

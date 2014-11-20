@@ -40,9 +40,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		// Initialise our data source.
 		$data = array();
 
-		// Get transaction and visitor data, if desired.
+		// Get transaction, ecomm and visitor data, if desired.
 		if (Mage::helper('googletagmanager')->isDataLayerTransactionsEnabled()) $data = $data + $this->_getTransactionData();
 		if (Mage::helper('googletagmanager')->isDataLayerVisitorsEnabled()) $data = $data + $this->_getVisitorData();
+		if (Mage::helper('googletagmanager')->isDataLayerDynEcomEnabled()) $data = $data + (count($this->_getPageData()) > 0 ? array('google_tag_params' => $this->_getPageData()) : array());
 
 		// Enable modules to add custom data to the data layer
 		$data_layer = new Varien_Object();
@@ -181,6 +182,43 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 		return $data;
 	}
+
+	/**
+	 * Get dynamic ecomm remarketing data for use in the data layer.
+	 *
+	 * @link https://developers.google.com/tag-manager/reference
+	 * @return array
+	 */
+    protected function _getPageData()
+    {
+        $pageIdentifier = Mage::app()->getFrontController()->getAction()->getFullActionName();
+        if (preg_match('/catalogsearch_/',$pageIdentifier)) {
+            $data = array('ecomm_pagetype' => 'search');
+        } else {
+            $page = Mage::getSingleton('cms/page');
+            if ($page->getId()) {
+            $data = array('ecomm_pagetype' => 'other');
+            if ($page->getIdentifier() == 'home') {
+                $data = array('ecomm_pagetype' => 'home');
+            }
+            }
+            $product = Mage::registry('current_product');
+            $category = Mage::registry('current_category');
+            if ($product && $product->getId()) {
+                $data = array('ecomm_prodid' => $product->getId(), 'ecomm_pagetype' => 'product', 'ecomm_totalvalue' => $product->getPrice());
+            } elseif ($category && $category->getId()) {
+                $data = array('ecomm_pagetype' => 'category');
+            }
+            if (Mage::app()->getFrontController()->getAction()->getFullActionName() == 'checkout_cart_index') {
+                $data = array('ecomm_pagetype' => 'cart');
+            }
+        }
+		$orderIds = $this->getOrderIds();
+		if (!empty($orderIds) || is_array($orderIds)) {
+            $data['ecomm_pagetype'] = 'purchase';
+        }
+        return $data;
+    }
 
 	/**
 	 * Render Google Tag Manager code
