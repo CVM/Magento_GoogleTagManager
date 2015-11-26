@@ -89,7 +89,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 					'transactionTax' => round($order->getBaseTaxAmount(),2),
 					'transactionPaymentType' => $order->getPayment()->getMethodInstance()->getTitle(),
 					'transactionCurrency' => $order->getOrderCurrencyCode(),
-					'transactionShippingMethod' => $order->getShippingCarrier()->getCarrierCode(),
+					'transactionShippingMethod' => ($order->getIsVirtual() ? '' : $order->getShippingCarrier()->getCarrierCode()),
 					'transactionPromoCode' => $order->getCouponCode(),
 					'transactionProducts' => array()
 				);
@@ -99,7 +99,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				$data['transactionTotal'] += $order->getBaseGrandTotal();
 				$data['transactionShipping'] += $order->getBaseShippingAmount();
 				$data['transactionTax'] += $order->getBaseTaxAmount();
-				$data['transactionShippingMethod'] .= '|'.$order->getShippingCarrier()->getCarrierCode();
+				$data['transactionShippingMethod'] .= '|'.($order->getIsVirtual() ? '' : $order->getShippingCarrier()->getCarrierCode());
 			}
 
 			// Build products array.
