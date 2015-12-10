@@ -1,0 +1,23 @@
+{
+	"name": "cvm/magento_googletagmanager",
+	"authors": [
+		{
+			"name": "Chris Martin",
+			"role": "Author/Maintainer"
+		}
+	],
+	"type": "magento-module",
+	"description": "Magento Google Tag Manager Module",
+	"homepage": "https://github.com/CVM/Magento_GoogleTagManager",
+	"require": {
+		"magento-hackathon/magento-composer-installer": "*"
+	},
+	"extra": {
+		"map": [
+			["app/code/community/CVM/GoogleTagManager", "app/code/community/CVM/GoogleTagManager"],
+			["app/design/frontend/base/default/layout/googletagmanager.xml", "app/design/frontend/base/default/layout/googletagmanager.xml"],
+			["app/design/frontend/base/default/template/googletagmanager", "app/design/frontend/base/default/template/googletagmanager"],
+			["app/etc/modules/CVM_GoogleTagManager.xml", "app/etc/modules/CVM_GoogleTagManager.xml"]
+		]
+	}
+}
