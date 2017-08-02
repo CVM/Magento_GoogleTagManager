@@ -10,7 +10,7 @@
 -->
 <layout version="0.1.0">
 	<default>
-		<reference name="after_body_start">
+		<reference type="page/html_head" name="head" as="head">
 			<block type="googletagmanager/gtm" name="google_tag_manager" as="google_tag_manager" template="googletagmanager/gtm.phtml" />
 		</reference>
 	</default>
